@@ -1,4 +1,4 @@
-![image](https://github.com/SwiftGlitxh/GWTX/assets/72777943/c751472f-da00-4159-95d7-acf58f7fa966)
+![image](https://github.com/SwiftGlitxh/GWTX/assets/72777943/b10e365e-911b-4f13-a92e-f79d99c101c7)
 
 # GWTX (beta)
 
