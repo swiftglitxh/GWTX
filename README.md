@@ -17,16 +17,14 @@ Before using the GWTX Console, ensure that the following packages are installed:
 
 1. Clone the repository:
 
-`git clone https://github.com/username/repo.git`
+`git clone https://github.com/SwiftGlitxh/GWTX`
 
 Change into the project directory:
-`cd repo`
+`cd GWTX`
 
-Install the required packages:
-`pip install -r requirements.txt`
 ## Usage
 To start the GWTX Console, run the following command:
-`python myconsole.py`
+`python3 gwtx.py`
 The console will display a banner and prompt you with a command prompt (gwtx >).
 ## Available Commands
 The following commands are available in the GWTX Console:
