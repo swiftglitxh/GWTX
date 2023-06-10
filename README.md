@@ -1,8 +1,8 @@
 ![image](https://github.com/SwiftGlitxh/GWTX/assets/72777943/c751472f-da00-4159-95d7-acf58f7fa966)
 
-# GWTX Console
+# GWTX (beta)
 
-GWTX Console is a custom console designed for exploiting targets and performing various network-related tasks. It provides a command-line interface for executing commands and managing options.
+GWTX is a console that will be designed for exploiting targets and performing various network-related tasks. It provides a command-line interface for executing commands and managing options.
 
 ## Prerequisites
 
