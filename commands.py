@@ -4,8 +4,9 @@ import cmd
 from colorama import Fore, Style
 from time import sleep
 import importlib
-
+from tools.reverse_shell import reverse
 from tools.locate import get_ip_location
+from tools.brutefinder import brute_force_url
 from tools.ssh import ssh
 
 # List of required packages
@@ -26,7 +27,6 @@ for package in required_packages:
 
 print(f"{Fore.GREEN}{Style.BRIGHT}[packages] All required packages are installed.{Style.RESET_ALL}")
 sleep(1)
-
 
 class MyConsole(cmd.Cmd):
     prompt = f"{Fore.CYAN}{Style.BRIGHT}gwtx > {Style.RESET_ALL}"
@@ -99,11 +99,10 @@ Options:
 Example:
 gwtx > use ssh''')
 
-
     def do_exploit(self, args):
         """Exploit a target"""
         if not self.ip_address:
-            print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL} IP address not set. Please use 'set ip <value>' command to set the IP address.")
+            pass 
         else:
             print(f"{Fore.YELLOW}{Style.BRIGHT}[info] Starting Exploit On  {Style.RESET_ALL}{self.ip_address}")
             sleep(1)
@@ -112,12 +111,14 @@ gwtx > use ssh''')
             print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL} Payload not set. Please use 'set payload <value>' command to set the payload.")
         else:
             if not os.path.exists(self.payload):
-                print(f"Error: Payload file '{self.payload}' does not exist.")
+                print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL} Payload file '{self.payload}' does not exist.")
             else:
                 print(f"{Fore.YELLOW}{Style.BRIGHT}[info] Running payload '{Fore.RED}{Style.NORMAL}{self.payload}{Fore.YELLOW}{Style.BRIGHT}' against target: {Style.RESET_ALL}{self.ip_address}")
                 # Execute the payload Python script
                 if self.payload == "tools/locate.py":
                     get_ip_location(self.ip_address)
+                if self.payload == "tools/reverse_shell.py":
+                    reverse(self.ip_address)
                     print(f"{Fore.CYAN}{Style.BRIGHT}[complete] Scan Complete{Style.RESET_ALL}")
                 elif self.payload == "tools/ssh.py":
                     ssh()
@@ -136,10 +137,11 @@ gwtx > use ssh''')
                 self.payload = "tools/" + value + ".py"
                 print(f"{Fore.YELLOW}{Style.BRIGHT}[info]{Style.RESET_ALL} --> Set {option} to {value}")
             else:
-                print(f"Error: Unknown option '{option}'")
+                print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL} Unknown option '{option}'")
 
     def do_use(self, args):
         """Set an option"""
+        use = ['ssh','dictFinder']
         parts = args.split()
         if len(parts) != 1:
             print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL} Invalid arguments for 'use' command. Usage: use <option>")
@@ -149,12 +151,24 @@ gwtx > use ssh''')
                 print(f"{Fore.YELLOW}{Style.BRIGHT}[info]{Style.RESET_ALL} --> Now using {option}")
                 print(f"{Fore.YELLOW}{Style.BRIGHT}*** Now using SSH.{Style.RESET_ALL}")
                 ssh()
+            if option == "-h":
+                print(f"\n{Fore.YELLOW}{Style.BRIGHT}Available Options:{Style.RESET_ALL}")
+                print(f"{'-' * 65}\n {'Options Available':<30}\n{'-' * 65}")
+                for count, value in enumerate(use,start=1):
+                    print(count, value)
+                print('\nExample:\n gwtx > use dictFinder\n')
 
+            elif option == "dictFinder":
+                base_url = input(f"{Fore.CYAN}{Style.BRIGHT}[user]{Style.RESET_ALL}  Please enter the domain: ")
+                wordlist = input(f"{Fore.YELLOW}{Style.BRIGHT}[info]{Style.RESET_ALL}  Please enter the wordlist you wish to use: ")
+                brute_force_url(base_url, wordlist)
+            else:
+                print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL} {option} is not an option. Please type 'use -h' for options.")
     def do_ssh(self, args):
         ip = args.strip()
 
         if not ip:
-            print("Error: IP address is required")
+            print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL}  IP address is required")
             return
 
         hostkey_algorithms = "ssh-rsa,ssh-dss"  # Add the supported algorithms here
@@ -165,10 +179,10 @@ gwtx > use ssh''')
         except subprocess.CalledProcessError as e:
             error_output = e.output.decode().strip()
             if "no matching host key type found" in error_output:
-                print(f"Error: {error_output}")
+                print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL}  {error_output}")
                 # Perform actions specific to the error
             else:
-                print(f"Error: {error_output}")
+                print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL} {error_output}")
 
     def do_run(self, args):
         """Run the exploit"""
@@ -189,7 +203,7 @@ gwtx > use ssh''')
             ip = parts[0]
             print(f"{Fore.YELLOW}{Style.BRIGHT}[info]{Style.RESET_ALL}  pinging {ip}")
             subprocess.call(['ping', '-c', '4', ip])
-            print(f"{Fore.CYAN}{Style.BRIGHT}[success] complete pinging {ip}")
+            print(f"{Fore.CYAN}{Style.BRIGHT}[success]{Style.RESET_ALL} complete pinging {ip}")
 
     def do_scan(self, args):
         if self.ip_address == "":
@@ -202,7 +216,7 @@ gwtx > use ssh''')
     def do_lookup(self, args):
         """Perform DNS lookup"""
         if self.ip_address == "":
-            print("Error: IP address not set. Please use 'set ip <value>' command to set the IP address.")
+            print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL}  IP address not set. Please use 'set ip <value>' command to set the IP address.")
         else:
             print(f"{Fore.YELLOW}{Style.BRIGHT}[info] Performing DNS lookup for IP: {Style.RESET_ALL}{self.ip_address}")
             subprocess.call(['nslookup', self.ip_address])
@@ -214,7 +228,7 @@ gwtx > use ssh''')
         elif args == "payloads":
             self.show_payloads(args)
         else:
-            print(f"Error: Unknown command 'show {args}'")
+            print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL}  Unknown command 'show {args}'")
 
     def show_options(self, args):
         print(f'''
@@ -232,7 +246,7 @@ Payload  : {self.payload}''')
             payload_descriptions = {
                 "locate": "Locate IP location",
                 "ssh": "SSH to another machine",
-                # Add more payload descriptions as needed
+                "tools/reverse_shell.py": "Create a reverse shell for windows"
             }
 
             # Print the payloads in a formatted table
