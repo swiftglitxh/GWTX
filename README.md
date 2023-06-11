@@ -13,6 +13,11 @@ Before using the GWTX Console, ensure that the following packages are installed:
 - `cmd`
 - `colorama`
 
+## UPDATES
++ FTP - File Transfer Protocol has now been added 
++ SSH -  Secure Socket Shell has been added 
++ Show payloads | use -h has been changed
+
 ## Installation
 
 1. Clone the repository:
