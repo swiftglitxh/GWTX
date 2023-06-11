@@ -4,10 +4,12 @@ import cmd
 from colorama import Fore, Style
 from time import sleep
 import importlib
+from tools.reverse_shell import reverse
 from tools.locate import get_ip_location
 from tools.brutefinder import brute_force_url
 from tools.ssh import ssh
 
+version = "0.1"
 # List of required packages
 required_packages = ["colorama"]
 
@@ -34,7 +36,7 @@ class MyConsole(cmd.Cmd):
 
     def banner(self):
         print(f'''
-        \t\t        _,.-------.,_
+        \t\t        _,.-------.,_       v {version}
         \t\t     ,;~'             '~;,
         \t\t   ,;                     ;,
         \t\t  ;                         ;
@@ -69,7 +71,7 @@ class MyConsole(cmd.Cmd):
                     j###t E#K:    L#W;          t#E   LK:    t#E
                      .G#t EG      LE.            fE   i       tDj
                        ;; ;       ;@              :              \n
-{Fore.YELLOW}{Style.BRIGHT}    *** Welcome to the GWTX console! Type 'help' for available commands ***{Style.RESET_ALL}\n
+{Fore.YELLOW}{Style.BRIGHT}    *** Welcome to the GWTX! Type 'help' for available commands ***{Style.RESET_ALL}\n
 [\tThis tool is a custom console designed for exploiting targets \t\t]\n[    and performing various network-related tasks.It provides a command-line\t]\n[\t  interface for executing commands and managing options.\t\t]\n''')
  # If all packages are installed
     def do_help(self, args):
@@ -84,19 +86,22 @@ class MyConsole(cmd.Cmd):
     show payloads           Show payloads available
     scan                    Scan IP for open ports
     ssh                     Connect to machine with SSH
+    ftp <ip>                Connect to an FTP server
+    ping <ip>               Ping an IP address
     clear                   Clear the screen
     exit                    Exit the console
-________________________________________________________\n
-The 'use' command is used to set an option.
+    ________________________________________________________\n
+    The 'use' command is used to set an option.
 
-Usage:
-use <option>
+    Usage:
+    use <option>
 
-Options:
-- ssh: Use SSH force mode
+    Options:
+    - ssh: Use SSH force mode
 
-Example:
-gwtx > use ssh''')
+    Example:
+    gwtx > use ssh''')
+
 
     def do_exploit(self, args):
         """Exploit a target"""
@@ -116,6 +121,9 @@ gwtx > use ssh''')
                 # Execute the payload Python script
                 if self.payload == "tools/locate.py":
                     get_ip_location(self.ip_address)
+                if self.payload == "tools/reverse_shell.py":
+                    reverse(self.ip_address)
+                    print(f"{Fore.CYAN}{Style.BRIGHT}[complete] Scan Complete{Style.RESET_ALL}")
                 elif self.payload == "tools/ssh.py":
                     ssh()
 
@@ -191,6 +199,14 @@ gwtx > use ssh''')
         """Run the sniff command"""
         print("Running the sniff command")
 
+    def do_ftp(self, args):
+        ip = args.split()
+        if len(ip) != 1:
+            print(f"{Fore.RED}{Style.BRIGHT}[error] {Style.RESET_ALL} Invalid arguments for 'FTP' command. Usage: ftp <ip>")
+        else:
+            print("Running the FTP command")
+            ip_address = ip[0]
+            subprocess.call(['ftp', ip_address])
     def do_ping(self, args):
         parts = args.split()
         if len(parts) != 1:
@@ -227,35 +243,22 @@ gwtx > use ssh''')
             print(f"{Fore.RED}{Style.BRIGHT}[error]{Style.RESET_ALL}  Unknown command 'show {args}'")
 
     def show_options(self, args):
-        print(f'''
-IP       : {self.ip_address}
+        print(f'''IP       : {self.ip_address}
 Payload  : {self.payload}''')
 
     def show_payloads(self, args):
-        directory = "tools/"  # Assuming the directory path is passed as an argument
-        # Check if the directory exists
-        if os.path.isdir(directory):
-            # List all files in the directory
-            files = os.listdir(directory)
-
-            # Payload descriptions
-            payload_descriptions = {
-                "locate": "Locate IP location",
-                "ssh": "SSH to another machine"
-            }
-
+            payloads = [
+            'locate \t| Gather information about the target <ip>',
+            'ssh \t| SSH to another machine'
+            ]
             # Print the payloads in a formatted table
             print(f"\n{Fore.YELLOW}{Style.BRIGHT}Available Payloads:{Style.RESET_ALL}")
             print(f"{'-' * 65}\n{'Payload':<30}{'Description':<35}\n{'-' * 65}")
-            for file in files:
-                if file.endswith(".py"):
-                    payload_name = file[:-3]
-                    payload_description = payload_descriptions.get(payload_name, "No description available")
-                    print(f"{payload_name:<30}{payload_description:<35}")
+            for payload in payloads:
+                print(f"{payload}")
 
             print(f"\n{Fore.YELLOW}{Style.BRIGHT}Use 'set payload <payload_name>' to set the payload{Style.RESET_ALL}")
-        else:
-            print("Invalid directory path.")
+        
 
     def do_exit(self, args):
         """Exit the console"""
