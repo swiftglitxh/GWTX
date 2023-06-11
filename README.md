@@ -45,7 +45,7 @@ Use the help command to see the full list of available commands and their descri
 ## Example Usage
 Here's an example workflow to help you get started:
 
-```
+```python
                                _,.-------.,_
                              ,;~'             '~;,
                            ,;                     ;,
