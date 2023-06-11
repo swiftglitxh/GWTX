@@ -4,7 +4,6 @@ import cmd
 from colorama import Fore, Style
 from time import sleep
 import importlib
-from tools.reverse_shell import reverse
 from tools.locate import get_ip_location
 from tools.brutefinder import brute_force_url
 from tools.ssh import ssh
@@ -117,9 +116,6 @@ gwtx > use ssh''')
                 # Execute the payload Python script
                 if self.payload == "tools/locate.py":
                     get_ip_location(self.ip_address)
-                if self.payload == "tools/reverse_shell.py":
-                    reverse(self.ip_address)
-                    print(f"{Fore.CYAN}{Style.BRIGHT}[complete] Scan Complete{Style.RESET_ALL}")
                 elif self.payload == "tools/ssh.py":
                     ssh()
 
@@ -245,8 +241,7 @@ Payload  : {self.payload}''')
             # Payload descriptions
             payload_descriptions = {
                 "locate": "Locate IP location",
-                "ssh": "SSH to another machine",
-                "tools/reverse_shell.py": "Create a reverse shell for windows"
+                "ssh": "SSH to another machine"
             }
 
             # Print the payloads in a formatted table
