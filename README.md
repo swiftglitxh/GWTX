@@ -1,3 +1,6 @@
+# GWTX HAS COME TO A PAUSE
+Please note I will return to developing this tool,I am busy right now currently working on **HIDEANDSEEK** but will return developing this tool once it has been complete.
+
 ![image](https://github.com/SwiftGlitxh/GWTX/assets/72777943/b10e365e-911b-4f13-a92e-f79d99c101c7)
 
 # GWTX (beta)
